@@ -5,6 +5,7 @@ public class PlayerMove : MonoBehaviour
 {
     [SerializeField] private float _movementSpeed;
 
+    private CameraMovement _cameraMovement;
     private Rigidbody _rigibody;
 
     private Vector3 _movementVector;
@@ -14,14 +15,31 @@ public class PlayerMove : MonoBehaviour
         _rigibody = GetComponent<Rigidbody>();   
     }
 
+    private void Start()
+    {
+        _cameraMovement = FindObjectOfType<CameraMovement>();
+    }
+
     private void Update()
     {
-        float velocityX = Input.GetAxis("Horizontal");
-        float velocityZ = Input.GetAxis("Vertical");
+        if (IsMoving)
+        {
+            transform.forward = _cameraMovement.LookDirection;
+        }
+
+        // move to input manager
+        float velocityX = Input.GetAxisRaw("Horizontal");
+        float velocityZ = Input.GetAxisRaw("Vertical");
 
         _movementVector = new Vector3(velocityX, 0, velocityZ).normalized * _movementSpeed;
         _movementVector.y = _rigibody.velocity.y;
-
-        _rigibody.velocity = _movementVector;
     }
+    
+    private void FixedUpdate()
+    {
+        var localMovementVector = transform.TransformDirection(_movementVector);
+        _rigibody.velocity = localMovementVector;
+    }
+
+    private bool IsMoving => _rigibody.velocity.magnitude > 0.01f;
 }
