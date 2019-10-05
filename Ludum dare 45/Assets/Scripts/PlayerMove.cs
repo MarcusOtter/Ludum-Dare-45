@@ -3,9 +3,13 @@
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMove : MonoBehaviour
 {
+    internal float CurrentVelocity => _rigibody.velocity.sqrMagnitude;
+
     [SerializeField] private float _movementSpeed;
+    [SerializeField] [Range(0f, 1f)] private float _rotationSpeed = 0.2f;
 
     private CameraMovement _cameraMovement;
+    private PlayerInput _playerInput;
     private Rigidbody _rigibody;
 
     private Vector3 _movementVector;
@@ -18,26 +22,24 @@ public class PlayerMove : MonoBehaviour
     private void Start()
     {
         _cameraMovement = FindObjectOfType<CameraMovement>();
+        _playerInput = FindObjectOfType<PlayerInput>();
     }
 
     private void Update()
     {
         if (IsMoving)
         {
-            transform.forward = _cameraMovement.LookDirection;
+            Vector3 forwardRotation = new Vector3(_rigibody.velocity.x, 0, _rigibody.velocity.z);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(forwardRotation), _rotationSpeed);
         }
 
-        // move to input manager
-        float velocityX = Input.GetAxisRaw("Horizontal");
-        float velocityZ = Input.GetAxisRaw("Vertical");
-
-        _movementVector = new Vector3(velocityX, 0, velocityZ).normalized * _movementSpeed;
+        _movementVector = new Vector3(_playerInput.HorizontalAxis, 0, _playerInput.VerticalAxis).normalized * _movementSpeed;
         _movementVector.y = _rigibody.velocity.y;
     }
     
     private void FixedUpdate()
     {
-        var localMovementVector = transform.TransformDirection(_movementVector);
+        var localMovementVector = _cameraMovement.transform.TransformDirection(_movementVector);
         _rigibody.velocity = localMovementVector;
     }
 

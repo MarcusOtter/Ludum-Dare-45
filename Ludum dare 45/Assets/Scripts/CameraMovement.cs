@@ -6,6 +6,10 @@ public class CameraMovement : MonoBehaviour
 
     [SerializeField] private float _rotationSpeed;
 
+    [SerializeField] private float _minimumZoom = 3f;
+    [SerializeField] private float _maximumZoom = 10f;
+    [SerializeField] private float _zoomSpeed = 0.1f;
+
     private bool _draggingCamera;
 
     private PlayerInput _playerInput;
@@ -26,6 +30,21 @@ public class CameraMovement : MonoBehaviour
     {
         _draggingCamera = activate;
     }
+
+    private void Update()
+    {
+        if (_playerInput.ScrollWheel > 0f && CameraCanZoomIn)
+        {
+            _camera.orthographicSize -= _zoomSpeed;
+        }
+        else if (_playerInput.ScrollWheel < 0f && CameraCanZoomOut)
+        {
+            _camera.orthographicSize += _zoomSpeed;
+        }
+    }
+
+    private bool CameraCanZoomIn => _camera.orthographicSize > _minimumZoom;
+    private bool CameraCanZoomOut => _camera.orthographicSize < _maximumZoom;
 
     private void LateUpdate()
     {
