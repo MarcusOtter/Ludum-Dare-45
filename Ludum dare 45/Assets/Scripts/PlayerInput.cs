@@ -9,7 +9,10 @@ public class PlayerInput : MonoBehaviour
     internal float VerticalAxis { get; private set; }
 
     internal event MouseState OnRightMouseChanged;
+    internal event MouseState OnLeftMouseChanged;
     internal delegate void MouseState(bool isPressed);
+
+    internal bool LeftMouseIsPressed { get; private set; }
 
     private void Update()
     {
@@ -25,6 +28,17 @@ public class PlayerInput : MonoBehaviour
         else if (Input.GetMouseButtonUp(1))
         {
             OnRightMouseChanged?.Invoke(false);
+        }
+
+        LeftMouseIsPressed = Input.GetMouseButton(0);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            OnLeftMouseChanged?.Invoke(true);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            OnLeftMouseChanged?.Invoke(false);
         }
     }
 }
