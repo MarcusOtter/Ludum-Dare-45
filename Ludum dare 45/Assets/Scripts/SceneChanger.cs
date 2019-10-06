@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,6 +13,7 @@ public class SceneChanger : MonoBehaviour
     [SerializeField] private float _waitTime = 0.5f;
 
     private Animator _animator;
+    private PlayerInput _playerInput;
 
     private int _leavingSceneAnimation;
     private int _enteringSceneAnimation;
@@ -26,6 +28,24 @@ public class SceneChanger : MonoBehaviour
 
         _leavingSceneAnimation = Animator.StringToHash(_leavingSceneParameterName);
         _enteringSceneAnimation = Animator.StringToHash(_enteringSceneParameterName);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += Initialize;
+    }
+
+    private void Initialize(Scene scene, LoadSceneMode mode)
+    {
+        if (_playerInput != null) { _playerInput.OnRestartKeyPressed -= HandleRestartKeyPressed; }
+
+        _playerInput = FindObjectOfType<PlayerInput>();
+        _playerInput.OnRestartKeyPressed += HandleRestartKeyPressed;
+    }
+
+    private void HandleRestartKeyPressed(object sender, EventArgs e)
+    {
+        ReloadScene();
     }
 
     internal void LoadNextScene()
@@ -58,12 +78,17 @@ public class SceneChanger : MonoBehaviour
         _activeLoadingSequence = null;
     }
 
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= Initialize;
+    }
+
     private void SingletonCheck()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(transform.root.gameObject);
+            DontDestroyOnLoad(transform.root);
         }
         else
         {

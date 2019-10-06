@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField] private float _zoomSpeed = 0.1f;
 
     private bool _draggingCamera;
+    private bool _isPaused;
 
     private PlayerInput _playerInput;
     private Camera _camera;
@@ -24,6 +26,12 @@ public class CameraMovement : MonoBehaviour
     {
         _playerInput = FindObjectOfType<PlayerInput>();
         _playerInput.OnRightMouseChanged += SetCameraDragActive;
+        LevelManager.Instance.OnPauseChanged += HandlePauseChanged;
+    }
+
+    private void HandlePauseChanged(bool paused)
+    {
+        _isPaused = paused;
     }
 
     private void SetCameraDragActive(bool activate)
@@ -33,6 +41,8 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
+        if (_isPaused) { return; }
+
         if (_playerInput.ScrollWheel > 0f && CameraCanZoomIn)
         {
             _camera.orthographicSize -= _zoomSpeed;
@@ -49,6 +59,7 @@ public class CameraMovement : MonoBehaviour
     private void LateUpdate()
     {
         if (!_draggingCamera) { return; }
+        if (_isPaused) { return; }
         transform.rotation *= Quaternion.Euler(0, _playerInput.MouseDeltaX * _rotationSpeed, 0);
     }
 
@@ -58,5 +69,6 @@ public class CameraMovement : MonoBehaviour
     private void OnDisable()
     {
         _playerInput.OnRightMouseChanged -= SetCameraDragActive;
+        LevelManager.Instance.OnPauseChanged -= HandlePauseChanged;
     }
 }

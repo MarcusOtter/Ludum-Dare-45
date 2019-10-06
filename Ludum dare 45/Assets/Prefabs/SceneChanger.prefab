@@ -220,7 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _leavingSceneParameterName: LeaveScene
   _enteringSceneParameterName: EnterScene
-  _waitTime: 0.5
+  _waitTime: 0.75
 --- !u!95 &8491146171532405104
 Animator:
   serializedVersion: 3

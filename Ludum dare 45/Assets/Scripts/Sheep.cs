@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class Sheep : MonoBehaviour, IGrabbable
 {
+    internal bool IsDead { get; private set; }
+    internal bool IsSafe { get; private set; }
+
     [SerializeField] private float _movementSpeed;
     [SerializeField] private float _detectionRange;
     [SerializeField] [Range(0f, 0.2f)] private float _breakAmount = 0.05f;
@@ -15,6 +18,7 @@ public class Sheep : MonoBehaviour, IGrabbable
 
     private bool _beingHeld;
     private bool _beingThrown;
+    private bool _isPaused;
 
     private void Awake()
     {
@@ -25,10 +29,19 @@ public class Sheep : MonoBehaviour, IGrabbable
     private void Start()
     {
         _playerTransform = FindObjectOfType<PlayerMove>().transform;
+        LevelManager.Instance.OnPauseChanged += HandlePauseChanged;
+    }
+
+    private void HandlePauseChanged(bool paused)
+    {
+        _isPaused = paused;
+        _rigidbody.isKinematic = paused;
     }
 
     private void Update()
     {
+        if (_isPaused) { return; }
+
         _collider.enabled = !_beingHeld;
 
         if (_beingHeld)
@@ -92,5 +105,10 @@ public class Sheep : MonoBehaviour, IGrabbable
     {
         yield return new WaitForSeconds(seconds);
         _beingThrown = false;
+    }
+
+    private void OnDisable()
+    {
+        LevelManager.Instance.OnPauseChanged -= HandlePauseChanged;
     }
 }
