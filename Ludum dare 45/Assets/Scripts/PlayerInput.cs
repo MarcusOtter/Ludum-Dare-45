@@ -14,6 +14,8 @@ public class PlayerInput : MonoBehaviour
 
     internal bool LeftMouseIsPressed { get; private set; }
 
+    [SerializeField] private KeyCode _restartKey = KeyCode.R;
+
     private void Update()
     {
         MouseDeltaX = Input.GetAxis("Mouse X");
@@ -39,6 +41,11 @@ public class PlayerInput : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             OnLeftMouseChanged?.Invoke(false);
+        }
+
+        if (Input.GetKeyDown(_restartKey))
+        {
+            SceneChanger.Instance?.ReloadScene();
         }
     }
 }
