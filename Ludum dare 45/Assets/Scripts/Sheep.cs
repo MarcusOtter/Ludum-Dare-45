@@ -67,6 +67,7 @@ public class Sheep : MonoBehaviour, IGrabbable
 
     public void Grabbed(Transform attatchPoint)
     {
+        _rigidbody.useGravity = false;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
         _beingHeld = true;
@@ -77,14 +78,18 @@ public class Sheep : MonoBehaviour, IGrabbable
     {
         _beingHeld = false;
         _beingThrown = true;
-        StartCoroutine(BeThrown(force, throwDuration));
-    }
 
-    private IEnumerator BeThrown(Vector3 force, float seconds)
-    {
+        _rigidbody.useGravity = true;
         _rigidbody.velocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;
+
         _rigidbody.AddForce(force, ForceMode.Impulse);
+
+        StartCoroutine(WaitForThrowDelay(throwDuration));
+    }
+
+    private IEnumerator WaitForThrowDelay(float seconds)
+    {
         yield return new WaitForSeconds(seconds);
         _beingThrown = false;
     }
