@@ -7,7 +7,14 @@ public class KillPlane : MonoBehaviour
         var sheep = other.GetComponent<Sheep>();
         if (sheep != null)
         {
+            LevelManager.Instance.RegisterSheepDeath();
+            return;
+        }
 
+        var player = other.GetComponent<PlayerMove>();
+        if (player != null)
+        {
+            LevelManager.Instance.RegisterPlayerDeath();
         }
     }
 }

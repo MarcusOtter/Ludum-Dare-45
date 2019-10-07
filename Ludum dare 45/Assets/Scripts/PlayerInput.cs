@@ -21,16 +21,16 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private KeyCode _restartKey = KeyCode.R;
     [SerializeField] private KeyCode _pauseKey = KeyCode.Escape;
 
-    private bool _isPaused;
+    private PauseState _currentPauseState;
 
     private void Start()
     {
         LevelManager.Instance.OnPauseChanged += HandlePauseChanged;
     }
 
-    private void HandlePauseChanged(bool paused)
+    private void HandlePauseChanged(PauseState state)
     {
-        _isPaused = paused;
+        _currentPauseState = state;
     }
 
     private void Update()
@@ -45,7 +45,7 @@ public class PlayerInput : MonoBehaviour
             OnRestartKeyPressed?.Invoke(this, EventArgs.Empty);
         }
 
-        if (_isPaused) { return; }
+        if (_currentPauseState != PauseState.NotPaused) { return; }
 
         MouseDeltaX = Input.GetAxis("Mouse X");
         ScrollWheel = Input.GetAxis("Mouse ScrollWheel");

@@ -18,7 +18,7 @@ public class Sheep : MonoBehaviour, IGrabbable
 
     private bool _beingHeld;
     private bool _beingThrown;
-    private bool _isPaused;
+    private PauseState _currentPauseState;
 
     private void Awake()
     {
@@ -32,15 +32,15 @@ public class Sheep : MonoBehaviour, IGrabbable
         LevelManager.Instance.OnPauseChanged += HandlePauseChanged;
     }
 
-    private void HandlePauseChanged(bool paused)
+    private void HandlePauseChanged(PauseState state)
     {
-        _isPaused = paused;
-        _rigidbody.isKinematic = paused;
+        _currentPauseState = state;
+        _rigidbody.isKinematic = _currentPauseState is PauseState.ManuallyPaused;
     }
 
     private void Update()
     {
-        if (_isPaused) { return; }
+        if (_currentPauseState is PauseState.ManuallyPaused) { return; }
 
         _collider.enabled = !_beingHeld;
 

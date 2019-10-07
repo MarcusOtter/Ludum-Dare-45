@@ -16,9 +16,9 @@ public class UIManager : MonoBehaviour
         LevelManager.Instance.OnPauseChanged += HandlePauseChanged;
     }
 
-    private void HandlePauseChanged(bool paused)
+    private void HandlePauseChanged(PauseState state)
     {
-        _pauseMenu.SetActive(paused);
+        _pauseMenu.SetActive(state != PauseState.NotPaused);
     }
 
     private void OnDisable()

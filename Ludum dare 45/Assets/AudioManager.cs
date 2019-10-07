@@ -21,11 +21,17 @@ public class AudioManager : MonoBehaviour
             ? Random.Range(soundEffect.MinPitch, soundEffect.MaxPitch)
             : 1;
 
-        audioSource.clip = soundEffect.RandomizeClip
+        var clip = soundEffect.RandomizeClip
             ? soundEffect.Clips[Random.Range(0, soundEffect.Clips.Length)]
             : soundEffect.Clips[0];
 
+
+        audioSource.clip = clip;
+
         audioSource.Play();
+
+        // Destroy sound effect 1 second after it completes
+        Destroy(audioSource.gameObject, clip.length + 1f);
     }
 
     private void SingletonCheck()

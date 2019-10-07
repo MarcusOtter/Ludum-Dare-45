@@ -6,15 +6,15 @@ public class LevelManager : MonoBehaviour
 {
     internal static LevelManager Instance { get; private set; }
 
-    internal event PauseState OnPauseChanged;
-    // Add reason for pausing in enum (failed, succeeded, manual, etc)
-    internal delegate void PauseState(bool paused);
+    internal event PauseDelegate OnPauseChanged;
+    internal delegate void PauseDelegate(PauseState state);
 
     [SerializeField] private Level[] _levels;
 
-    private Level _currentLevel;
+    private int _currentLevelIndex;
     private int _currentSheepKillCount;
-    private bool _isPaused;
+
+    private PauseState _currentPauseState;
 
     private PlayerInput _playerInput;
 
@@ -30,28 +30,54 @@ public class LevelManager : MonoBehaviour
 
     private void Initialize(Scene scene, LoadSceneMode mode)
     {
-        if (_playerInput != null) { _playerInput.OnPauseKeyPressed -= HandlePauseKeyPressed; }
+        if (_playerInput != null)
+        {
+            _playerInput.OnPauseKeyPressed -= HandlePauseKeyPressed;
+            _playerInput.OnRestartKeyPressed -= HandleRestartKeyPressed;
+        }
 
         _playerInput = FindObjectOfType<PlayerInput>();
         _playerInput.OnPauseKeyPressed += HandlePauseKeyPressed;
+        _playerInput.OnRestartKeyPressed += HandleRestartKeyPressed;
     }
 
-    internal void PauseGame(bool pause)
+    private void HandleRestartKeyPressed(object sender, EventArgs e)
     {
-        OnPauseChanged?.Invoke(pause);
+        SetPauseState(PauseState.NotPaused);
+    }
+
+    private void SetPauseState(PauseState state)
+    {
+        _currentPauseState = state;
+        OnPauseChanged?.Invoke(state);
     }
 
     private void HandlePauseKeyPressed(object sender, EventArgs e)
     {
-        _isPaused = !_isPaused;
-        PauseGame(_isPaused);
+        switch (_currentPauseState)
+        {
+            case PauseState.NotPaused:
+                SetPauseState(PauseState.ManuallyPaused);
+                break;
+
+            case PauseState.ManuallyPaused:
+                SetPauseState(PauseState.NotPaused);
+                break;
+        }
     }
 
-    internal void RegisterSheepKill()
+    internal void RegisterPlayerDeath()
     {
-        if (++_currentSheepKillCount > _currentLevel.MaxSheepKilled)
-        {
+        SetPauseState(PauseState.LevelFailed);
+    }
 
+    internal void RegisterSheepDeath()
+    {
+        _currentSheepKillCount++;
+
+        if (_currentSheepKillCount > _levels[_currentLevelIndex].MaxSheepKilled)
+        {
+            SetPauseState(PauseState.LevelFailed);
         }
     }
 

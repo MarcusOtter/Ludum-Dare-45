@@ -14,7 +14,7 @@ public class PlayerMove : MonoBehaviour
 
     private Vector3 _movementVector;
 
-    private bool _isPaused;
+    private PauseState _currentPauseState;
 
     private void Awake()
     {
@@ -28,15 +28,15 @@ public class PlayerMove : MonoBehaviour
         LevelManager.Instance.OnPauseChanged += HandlePauseChanged;
     }
 
-    private void HandlePauseChanged(bool paused)
+    private void HandlePauseChanged(PauseState state)
     {
-        _isPaused = paused;
-        _rigidbody.isKinematic = paused;
+        _currentPauseState = state;
+        _rigidbody.isKinematic = _currentPauseState != PauseState.NotPaused;
     }
 
     private void Update()
     {
-        if (_isPaused) { return; }
+        if (_currentPauseState != PauseState.NotPaused) { return; }
 
         if (IsMoving)
         {
@@ -50,7 +50,7 @@ public class PlayerMove : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (_isPaused) { return; }
+        if (_currentPauseState != PauseState.NotPaused) { return; }
 
         var localMovementVector = _cameraMovement.transform.TransformDirection(_movementVector);
         _rigidbody.velocity = localMovementVector;
