@@ -41,7 +41,11 @@ public class PlayerMove : MonoBehaviour
         if (IsMoving)
         {
             Vector3 forwardRotation = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z);
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(forwardRotation), _rotationSpeed);
+
+            if (forwardRotation != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(forwardRotation), _rotationSpeed);
+            }
         }
 
         _movementVector = new Vector3(_playerInput.HorizontalAxis, 0, _playerInput.VerticalAxis).normalized * _movementSpeed;

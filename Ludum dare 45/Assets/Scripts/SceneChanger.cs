@@ -11,6 +11,7 @@ public class SceneChanger : MonoBehaviour
     [SerializeField] private string _leavingSceneParameterName = "LeavingScene";
     [SerializeField] private string _enteringSceneParameterName = "EnteringScene";
     [SerializeField] private float _waitTime = 0.5f;
+    [SerializeField] private int _mainMenuSceneIndex = 0;
 
     private Animator _animator;
     private PlayerInput _playerInput;
@@ -48,9 +49,14 @@ public class SceneChanger : MonoBehaviour
         ReloadScene();
     }
 
-    internal void LoadNextScene()
+    internal void LoadMenuScene()
     {
-        ChangeSceneTo(SceneManager.GetActiveScene().buildIndex + 1);
+        ChangeSceneTo(_mainMenuSceneIndex);
+    }
+
+    internal void LoadScene(int sceneIndex)
+    {
+        ChangeSceneTo(sceneIndex);
     }
 
     internal void ReloadScene()
@@ -62,11 +68,16 @@ public class SceneChanger : MonoBehaviour
     {
         if (_activeLoadingSequence != null) { return; }
 
-        _activeLoadingSequence = LoadScene(buildIndex);
+        if (buildIndex != 0)
+        {
+            LevelManager.Instance.RegisterLevelChange();
+        }
+
+        _activeLoadingSequence = LoadSceneAsync(buildIndex);
         StartCoroutine(_activeLoadingSequence);
     }
 
-    private IEnumerator LoadScene(int buildIndex)
+    private IEnumerator LoadSceneAsync(int buildIndex)
     {
         _animator.SetTrigger(_leavingSceneAnimation);
 

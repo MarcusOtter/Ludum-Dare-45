@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8491146170620957176}
   - component: {fileID: 8491146170620957183}
   - component: {fileID: 8491146170620957182}
+  - component: {fileID: 9164662475073424807}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -58,7 +59,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!114 &8491146170620957183
 MonoBehaviour:
@@ -99,6 +100,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &9164662475073424807
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8491146170620957180}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &8491146170827042818
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +234,7 @@ MonoBehaviour:
   _leavingSceneParameterName: LeaveScene
   _enteringSceneParameterName: EnterScene
   _waitTime: 0.75
+  _mainMenuSceneIndex: 0
 --- !u!95 &8491146171532405104
 Animator:
   serializedVersion: 3

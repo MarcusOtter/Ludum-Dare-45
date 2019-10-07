@@ -20,5 +20,5 @@ MonoBehaviour:
   MinVolume: 0.1
   MaxVolume: 0.2
   RandomizePitch: 1
-  MinPitch: 1.3
-  MaxPitch: 1.5
+  MinPitch: 1.5
+  MaxPitch: 1.7

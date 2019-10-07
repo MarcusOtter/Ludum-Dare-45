@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d69d9dbe4392de459162f3668baf03d, type: 3}
   m_Name: Level 1
   m_EditorClassIdentifier: 
+  IsCompleted: 0
+  SavePercent: 0
+  MostAmountOfSavedSheep: 0
   LevelNumber: 1
   SceneIndex: 1
   MaxSheepKilled: 0

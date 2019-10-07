@@ -33,6 +33,11 @@ public class PlayerInput : MonoBehaviour
         _currentPauseState = state;
     }
 
+    internal void ForceRestartEvent()
+    {
+        OnRestartKeyPressed?.Invoke(this, EventArgs.Empty);
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(_pauseKey))
@@ -71,7 +76,6 @@ public class PlayerInput : MonoBehaviour
         {
             OnLeftMouseChanged?.Invoke(false);
         }
-
     }
 
     private void OnDisable()
