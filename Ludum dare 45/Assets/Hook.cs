@@ -7,6 +7,7 @@ public class Hook : MonoBehaviour
     [SerializeField] private Transform _sheepHolder;
     [SerializeField] private float _throwForce;
     [SerializeField] private float _throwDuration = 2f;
+    [SerializeField] private SoundEffect _sheepSoundEffect;
 
     private IGrabbable _grabbedObject;
 
@@ -30,6 +31,7 @@ public class Hook : MonoBehaviour
         if (_grabbedObject != null)
         {
             _grabbedObject.Released(_sheepHolder.forward * _throwForce, _throwDuration);
+            AudioManager.Instance.PlaySoundEffect(_sheepSoundEffect);
         }
 
         newGrabbedObject?.Grabbed(_sheepHolder);
