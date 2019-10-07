@@ -22,7 +22,7 @@ public class CameraMovement : MonoBehaviour
         _camera = GetComponentInChildren<Camera>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
         _playerInput = FindObjectOfType<PlayerInput>();
         _playerInput.OnRightMouseChanged += SetCameraDragActive;

@@ -12,7 +12,7 @@ public class Hook : MonoBehaviour
 
     private PlayerInput _playerInput;
 
-    private void OnEnable()
+    private void Start()
     {
         _playerInput = FindObjectOfType<PlayerInput>();
         _playerInput.OnLeftMouseChanged += HandleLeftMouseChanged;
